@@ -10,6 +10,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	final UserDetailsServiceImpl userDetailsService;
+
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -24,10 +30,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-        .withUser("teste")
-        .password(passwordEncoder().encode("123"))
-        .roles("ADMIN");
+		 auth
+		 	.userDetailsService(userDetailsService)
+		 	.passwordEncoder(passwordEncoder());
     }
 	
 	@Bean
